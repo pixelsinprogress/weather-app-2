@@ -74,17 +74,16 @@ export class WeatherApp extends Component {
 
   render() {
     var currentTemp = 'Temp will go here after fetching coordinates';
-    if (this.state.data.main) {
-      currentTemp = this.state.data.main.temp;
-    } else {
-      currentTemp = 'Error';
+    if (this.state.data.list) {
+      currentTemp = this.state.data.list[0].main.temp;
     }
     return (
         <div>
           <h1>{this.state.latitude}</h1>
           <h1>{this.state.longitude}</h1>
           <h1>{this.state.data.name}</h1>
-          <h1>{this.state.data.main.temp}</h1>
+
+
           <h1>{ currentTemp }{this.state.tempFahrenheit}</h1>
         </div>
     );
