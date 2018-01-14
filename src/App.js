@@ -24,7 +24,7 @@ export class WeatherApp extends Component {
 
     let otherApiKey = '70f1a80f7be9d0f99a01693ffe6fedf1'
 
-    let urlSuffix = '&APPID=' + otherApiKey;
+    let urlSuffix = '&APPID=' + otherApiKey + "&units=imperial";
 
     //let url = 'http://api.openweathermap.org/data/2.5/weather?lat=39.3096368&lon=-76.6298302&APPID=70f1a80f7be9d0f99a01693ffe6fedf1'
     let url = urlPrefix + lat + '&' + lon + urlSuffix;
@@ -37,13 +37,10 @@ export class WeatherApp extends Component {
       // console.log(data);
       // console.log(typeof data.body);
       // console.log(data.body);
-      let jsonData = JSON.parse(data.body);
-      console.log(jsonData.name);
-      console.log(self.state);
       self.setState({
         data: JSON.parse(data.body)
       });
-      console.log(self.state);
+      console.log(self.state.data);
     });
   }
 
