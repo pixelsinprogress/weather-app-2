@@ -10,8 +10,9 @@ export class WeatherApp extends Component {
     this.state = {
       latitude: null,
       longitude: null,
-      error: null,
+      location: '',
       data: {},
+      error: null
     };
     this.changeCity = this.changeCity.bind(this);
   }
@@ -29,7 +30,7 @@ export class WeatherApp extends Component {
 
     return (
         <div>
-          <Searchbar onClick={this.changeCity} />
+          <Searchbar location={this.state.location} onSubmit={this.changeCity} />
           <ChangeCity onChange={this.changeCity}/>
           <Info city={this.state.city}/>
         </div>

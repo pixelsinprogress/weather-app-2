@@ -7,23 +7,24 @@ export class Info extends React.Component {
     this.state = {
       latitude: null,
       longitude: null,
+      location: '',
       error: null,
       data: {},
     };
 
   }
 
-  populateData(city) {
-    //debugger;
+  fetchData = (evt) => {
+    evt.preventDefault();
     let urlPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
     let lat = 'lat=' + this.state.latitude;
     let lon = 'lon=' + this.state.longitude;
     let latAndLon = lat + '&' + lon;
-    let currentCity = city
-    let apiKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
-    let otherApiKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
+    let location = encodeURIComponent(this.state.location);
+    let apiKey = 'aca10c3987b461277deb339c916a5c20'; //Matt's API key
+    let otherApiKey = '70f1a80f7be9d0f99a01693ffe6fedf1'; //Nitin's API key
     let urlSuffix = '&APPID=' + otherApiKey + "&units=imperial";
-    let url = urlPrefix + currentCity + urlSuffix;
+    let url = urlPrefix + location + urlSuffix;
     let self = this; //sets the self variable to the WeatherApp component
     // console.log(this);
 
@@ -38,7 +39,7 @@ export class Info extends React.Component {
   }
 
   // grad the geolocation from the window obj. After setting state, call populateData() to make API call with lat and lon
-  fetchData() {
+  getCoords() {
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -61,13 +62,20 @@ export class Info extends React.Component {
 
   // When the component mounts, set the lat and lon in state
   componentDidMount() {
-    this.fetchData();
-    this.populateData(this.props.city);
+    this.getCoords();
   }
 
   componentWillReceiveProps(nextProps) {
     let city = nextProps.city
     this.populateData(city);
+  }
+
+  changeLocation = (evt) => {
+    evt.preventDefault();
+
+    this.setState({
+      location: evt.target.value
+    });
   }
 
   render() {
@@ -86,6 +94,11 @@ export class Info extends React.Component {
         <h1>Temp: { currentTemp }</h1>
         <h1>Humidity: { currentHumidity }</h1>
         <h1>Weather: { currentWeather }</h1>
+        <div>
+         <form onSubmit={this.fetchData}>
+           <input placeholder={"City, Country"} type="text" value={this.props.location} onChange={this.changeLocation}/>
+         </form>
+        </div>
       </div>
     );
   }
