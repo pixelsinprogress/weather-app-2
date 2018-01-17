@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Option } from './Option'
 
 export class ChangeCity extends React.Component {
   constructor(props) {
@@ -11,14 +12,18 @@ export class ChangeCity extends React.Component {
     this.props.onChange(city);
   }
 
+  addOption() {
+
+  }
+
   render() {
-   console.log(this);
+   //console.log(this);
    return (
      <div>
        <select
          id="citySelector"
          onChange={this.handleChange}>
-
+         {<Option />}
          <option value="Baltimore">Baltimore</option>
          <option value="London">London</option>
 

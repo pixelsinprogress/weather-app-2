@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { ChangeCity } from './ChangeCity';
 import { Info } from './Info';
+import { Searchbar } from './Searchbar';
 
 export class WeatherApp extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ export class WeatherApp extends Component {
 
     return (
         <div>
+          <Searchbar onClick={this.changeCity} />
           <ChangeCity onChange={this.changeCity}/>
           <Info city={this.state.city}/>
         </div>
