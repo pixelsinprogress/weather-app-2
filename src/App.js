@@ -4,37 +4,31 @@ import { ChangeCity } from './ChangeCity';
 import { Info } from './Info';
 import { Searchbar } from './Searchbar';
 
-export class WeatherApp extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      latitude: null,
-      longitude: null,
-      error: null,
-      data: {},
+      location: null
     };
-    this.changeCity = this.changeCity.bind(this);
+    this.changeLocation = this.changeLocation.bind(this); //'this' in the changeLocation func is referring to the App component
   }
 
-  changeCity(newCity) {
+  //location in state is set to the what the user types in teh search bar
+  changeLocation(location) {
     this.setState({
-      city: newCity
+      location: location
     });
+    //console.log("App location state: " + this.state.location)
   }
-
-  componentDidUpdate() {
-  };
 
   render() {
-
     return (
         <div>
-          <Searchbar onClick={this.changeCity} />
-          <ChangeCity onChange={this.changeCity}/>
-          <Info city={this.state.city}/>
+          <Searchbar onClick={this.changeLocation}/>
+          <Info location={this.state.location}/>
         </div>
     );
   }
 }
 
-export default WeatherApp;
+export default App;

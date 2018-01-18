@@ -11,9 +11,10 @@ export class Searchbar extends React.Component {
   //Error message if it doesn't exist (suggest alternatives?)
 
   handleChange() {
-    console.log(this.textInput.value)
-    const city = this.textInput.value;
-    this.props.onClick(city);
+    //debugger;
+    //console.log(this.textInput.value)
+    const location = this.textInput.value;
+    this.props.onClick(location);
   }
 
   render() {
