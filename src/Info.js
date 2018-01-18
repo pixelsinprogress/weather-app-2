@@ -65,11 +65,6 @@ export class Info extends React.Component {
     this.getCoords();
   }
 
-  componentWillReceiveProps(nextProps) {
-    let city = nextProps.city
-    this.populateData(city);
-  }
-
   changeLocation = (evt) => {
     evt.preventDefault();
 
@@ -96,7 +91,7 @@ export class Info extends React.Component {
         <h1>Weather: { currentWeather }</h1>
         <div>
          <form onSubmit={this.fetchData}>
-           <input placeholder={"City, Country"} type="text" value={this.props.location} onChange={this.changeLocation}/>
+           <input placeholder={"City, Country"} type="text" onChange={this.changeLocation}/>
          </form>
         </div>
       </div>
