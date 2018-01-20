@@ -5,31 +5,24 @@ export class Info extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      latitude: null,
-      longitude: null,
       error: null,
       data: {},
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.fetchData(nextProps.location, null, null);
-  }
-
-  fetchData(location, lat, lon) {
+  fetchWithCoords(lat, lon) {
     //debugger;
 
-    // let lat = 'lat=' + this.state.latitude;
-    // let lon = 'lon=' + this.state.longitude;
+    let coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
+
     let latAndLon = "lat=" + lat + '&' + "lon=" + lon;
 
-    let urlPrefix = "http://api.openweathermap.org/data/2.5/weather?";
-    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
-    let urllocation = encodeURIComponent(location);
     let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
     let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
     let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
-    let url = urlPrefix + latAndLon + urlSuffix;
+
+    let url = coordsURLPrefix + latAndLon + urlSuffix;
+
     console.log(url);
     //console.log(this);
 
@@ -45,31 +38,42 @@ export class Info extends React.Component {
     });
   }
 
-  // grad the geolocation from the window obj. After setting state, call fetchData() to make API call with lat and lon
-  getCoords() {
-    if (window.navigator.geolocation) { // if geolocation is supported
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.setState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
-          this.fetchData(null, this.state.latitude, this.state.longitude);
-        },
-        (error) => {
-          this.setState({
-            error: error.message,
-          });
-        }
-      );
-    } else {
-      // IP Fallback
-    }
+  fetchWithLocation(location) {
+    //debugger;
+
+    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
+
+    let urllocation = encodeURIComponent(location);
+
+    let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
+    let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
+    let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
+
+    let url = locationURLPrefix + location + urlSuffix;
+
+    console.log(url);
+    //console.log(this);
+
+    let self = this;
+
+    xhr({
+      url: url
+    }, function (err, data) {
+
+      self.setState({
+        data: JSON.parse(data.body) //parse the data.body HTML string into an object, set it to the data prop in state
+      });
+    });
   }
 
-  // When the component mounts, set the lat and lon in state
   componentDidMount() {
-    this.getCoords();
+    this.fetchWithCoords(this.props.lat, this.props.lon);
+  }
+
+
+  componentWillReceiveProps(nextProps) {
+    //console.log(nextProps)
+    nextProps.location == null ? this.fetchWithCoords(nextProps.lat, nextProps.lon) : this.fetchWithLocation(nextProps.location)
   }
 
   render() {
@@ -82,8 +86,8 @@ export class Info extends React.Component {
 
     return (
       <div>
-        <h1>Lat: {this.state.latitude}</h1>
-        <h1>Lon: {this.state.longitude}</h1>
+        <h1>Lat: {this.props.lat}</h1>
+        <h1>Lon: {this.props.lon}</h1>
         <h1>City: { currentCity }</h1>
         <h1>Temp: { currentTemp }</h1>
         <h1>Humidity: { currentHumidity }</h1>
