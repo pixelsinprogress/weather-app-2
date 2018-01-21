@@ -10,46 +10,27 @@ export class Info extends React.Component {
     };
   }
 
-  fetchWithCoords(lat, lon) {
+  fetchData(lat, lon, location) {
     //debugger;
 
+    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
     let coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
 
+    let urllocation = encodeURIComponent(location);
     let latAndLon = "lat=" + lat + '&' + "lon=" + lon;
 
     let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
     let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
     let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
 
-    let url = coordsURLPrefix + latAndLon + urlSuffix;
+    let url = ''
+    //let url = locationURLPrefix + location + urlSuffix;
 
-    console.log(url);
-    //console.log(this);
-
-    let self = this;
-
-    xhr({
-      url: url
-    }, function (err, data) {
-
-      self.setState({
-        data: JSON.parse(data.body) //parse the data.body HTML string into an object, set it to the data prop in state
-      });
-    });
-  }
-
-  fetchWithLocation(location) {
-    //debugger;
-
-    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
-
-    let urllocation = encodeURIComponent(location);
-
-    let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
-    let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
-    let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
-
-    let url = locationURLPrefix + location + urlSuffix;
+    if (location == null ) {
+      url = coordsURLPrefix + latAndLon + urlSuffix;
+    } else {
+      url = locationURLPrefix + location + urlSuffix;
+    }
 
     console.log(url);
     //console.log(this);
@@ -67,13 +48,12 @@ export class Info extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchWithCoords(this.props.lat, this.props.lon);
+    this.fetchData(this.props.lat, this.props.lon, this.props.location);
   }
-
 
   componentWillReceiveProps(nextProps) {
     //console.log(nextProps)
-    nextProps.location == null ? this.fetchWithCoords(nextProps.lat, nextProps.lon) : this.fetchWithLocation(nextProps.location)
+    this.fetchData(nextProps.lat, nextProps.lon, nextProps.location);
   }
 
   render() {
