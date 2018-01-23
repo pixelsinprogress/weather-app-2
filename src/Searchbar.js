@@ -10,9 +10,10 @@ export class Searchbar extends React.Component {
   //Validate/Convert text input
   //Error message if it doesn't exist (suggest alternatives?)
 
-  handleChange() {
+  handleChange(evt) {
     //debugger;
     //console.log(this.textInput.value)
+    evt.preventDefault();
     const location = this.textInput.value;
     this.props.onClick(location);
   }
@@ -21,8 +22,10 @@ export class Searchbar extends React.Component {
    //console.log(this);
    return (
      <div>
-       <input ref={(input) => { this.textInput = input; }}  type="text" />
-       <button onClick={this.handleChange}> Submit </button>
+       <form onSubmit={this.handleChange}>
+         <input ref={(input) => { this.textInput = input; }}  type="text" />
+         <button onClick={this.handleChange}> Submit </button>
+       </form>
      </div>
    );
  }
