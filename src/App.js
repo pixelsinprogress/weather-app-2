@@ -46,6 +46,8 @@ export class App extends Component {
             longitude: position.coords.longitude,
             loading: false,
           });
+          localStorage.setItem('latitude', this.state.latitude);
+          localStorage.setItem('longitude', this.state.longitude);
         },
         (error) => {
           this.setState({
@@ -58,9 +60,21 @@ export class App extends Component {
     }
   }
 
+  setCoordsFromLocalStorage() {
+    let cachedLat = localStorage.getItem('latitude');
+    let cachedLon = localStorage.getItem('longitude');
+    this.setState({
+      latitude: cachedLat,
+      longitude: cachedLon,
+      loading: false,
+    });
+  }
+
   // When the component mounts, set the lat and lon in state
   componentDidMount() {
-    this.getCoords();
+    let cachedLat = localStorage.getItem('latitude');
+    cachedLat != null ? this.setCoordsFromLocalStorage() : this.getCoords()
+
     //console.log(this.propTypes);
   }
 
