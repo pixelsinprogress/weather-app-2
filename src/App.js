@@ -5,7 +5,8 @@ import { ChangeCity } from './ChangeCity';
 import { Info } from './Info';
 import { Searchbar } from './Searchbar';
 import { PulseLoader } from 'react-spinners';
-import unsplash from 'unsplash-api'
+import unsplash from 'unsplash-api';
+
 
 export class App extends Component {
   constructor(props) {
@@ -29,9 +30,6 @@ export class App extends Component {
   changeLocation(location) {
     this.setState({
       location: location
-    });
-    unsplash.searchPhotos(location, null, null, null, function(error, photos, link) {
-      console.log(photos);
     });
     //console.log("App location state: " + this.state.location)
   }
@@ -60,9 +58,7 @@ export class App extends Component {
     }
   }
 
-  setCoordsFromLocalStorage() {
-    let cachedLat = localStorage.getItem('latitude');
-    let cachedLon = localStorage.getItem('longitude');
+  setCoordsFromLocalStorage(cachedLat, cachedLon) {
     this.setState({
       latitude: cachedLat,
       longitude: cachedLon,
@@ -73,7 +69,12 @@ export class App extends Component {
   // When the component mounts, set the lat and lon in state
   componentDidMount() {
     let cachedLat = localStorage.getItem('latitude');
-    cachedLat != null ? this.setCoordsFromLocalStorage() : this.getCoords()
+    let cachedLon = localStorage.getItem('longitude');
+
+    /* The line below checks to see if a lat already exists. If so, then no need to getCoords() */
+    //cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
+
+    this.getCoords();
 
     //console.log(this.propTypes);
   }
