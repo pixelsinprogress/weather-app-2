@@ -6,7 +6,9 @@ import { Info } from './Info';
 import { Searchbar } from './Searchbar';
 import { PulseLoader } from 'react-spinners';
 import unsplash from 'unsplash-api';
-
+import xhr from 'xhr';
+import { Unsplash } from './Unsplash';
+import { UnsplashUser } from './UnsplashUser';
 
 export class App extends Component {
   constructor(props) {
@@ -23,15 +25,58 @@ export class App extends Component {
     unsplash.init(this.state.unsplashID);
   }
 
-  fetchImage() {
+  fetchData(lat, lon, location) {
+
+    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
+    let coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
+
+    let urllocation = encodeURIComponent(location);
+    let latAndLon = "lat=" + lat + '&' + "lon=" + lon;
+
+    let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
+    let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
+    let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
+
+    let url = ''
+
+    if (location == null ) {
+      url = coordsURLPrefix + latAndLon + urlSuffix;
+    } else {
+      url = locationURLPrefix + location + urlSuffix;
+    }
+
+    let self = this;
+
+    xhr({
+      url: url
+    }, function (err, data) {
+
+      self.setState({
+        data: JSON.parse(data.body) //parse the data.body HTML string into an object, set it to the data prop in state
+      }, () => {
+        console.log(self.state.data)
+        let cityName = self.state.data.name
+        var randomPhotoNumber = Math.floor(Math.random() * 10);
+        unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
+          self.setState({
+            currentCityImage: photos[randomPhotoNumber].links.download, //parse the data.body HTML string into an object, set it to the data prop in state
+            userFirstName: photos[randomPhotoNumber].user.first_name,
+            userProfileLink: photos[randomPhotoNumber].user.links.html,
+            userProfileImage: photos[randomPhotoNumber].user.profile_image.medium,
+            loading: false,
+          });
+        });
+      });
+    });
   }
 
   //location in state is set to the what the user types in teh search bar
   changeLocation(location) {
     this.setState({
       location: location
+    }, () => {
+      this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
     });
-    //console.log("App location state: " + this.state.location)
   }
 
   // grab the geolocation from the window obj. After setting state, call fetchData() to make API call with lat and lon
@@ -41,11 +86,12 @@ export class App extends Component {
         (position) => {
           this.setState({
             latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            loading: false,
+            longitude: position.coords.longitude
+          }, () => {
+            localStorage.setItem('latitude', this.state.latitude);
+            localStorage.setItem('longitude', this.state.longitude);
+            this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
           });
-          localStorage.setItem('latitude', this.state.latitude);
-          localStorage.setItem('longitude', this.state.longitude);
         },
         (error) => {
           this.setState({
@@ -71,12 +117,11 @@ export class App extends Component {
     let cachedLat = localStorage.getItem('latitude');
     let cachedLon = localStorage.getItem('longitude');
 
-    /* The line below checks to see if a lat already exists. If so, then no need to getCoords() */
+    /* checks to see if a lat already exists. If so, then no need to getCoords() */
     //cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
 
+    /* getCoords everytime, regardless if cachedLat exists */
     this.getCoords();
-
-    //console.log(this.propTypes);
   }
 
   render() {
@@ -86,8 +131,24 @@ export class App extends Component {
           {
             this.state.loading ?
             <PulseLoader /> :
-            <Info location={this.state.location} lat={this.state.latitude} lon={this.state.longitude}/>
+            <Info
+              location={this.state.location}
+              lat={this.state.latitude}
+              lon={this.state.longitude}
+              city={this.state.data.name}
+              temp={this.state.data.main.temp}
+              humidity={this.state.data.main.humidity}
+              weather={this.state.data.weather[Object.keys(this.state.data.weather)[0]].description}
+            />
           }
+          <Unsplash
+            currentCityImage={this.state.currentCityImage}>
+          </Unsplash>
+          <UnsplashUser
+          userProfileLink={this.state.userProfileLink}
+          userProfileImage={this.state.userProfileImage}
+          userFirstName={this.state.userFirstName}>
+          </UnsplashUser>
         </div>
     );
   }
