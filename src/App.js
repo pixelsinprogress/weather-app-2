@@ -9,6 +9,13 @@ import unsplash from 'unsplash-api';
 import xhr from 'xhr';
 import { Unsplash } from './Unsplash';
 import { UnsplashUser } from './UnsplashUser';
+import WebFont from 'webfontloader';
+
+WebFont.load({
+  google: {
+    families: ['Titillium Web:300,400,700', 'sans-serif']
+  }
+});
 
 export class App extends Component {
   constructor(props) {
@@ -50,16 +57,14 @@ export class App extends Component {
     xhr({
       url: url
     }, function (err, data) {
-
       self.setState({
         data: JSON.parse(data.body) //parse the data.body HTML string into an object, set it to the data prop in state
       }, () => {
-        console.log(self.state.data)
         let cityName = self.state.data.name
         var randomPhotoNumber = Math.floor(Math.random() * 10);
         unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
           self.setState({
-            currentCityImage: photos[randomPhotoNumber].links.download, //parse the data.body HTML string into an object, set it to the data prop in state
+            currentCityImage: photos[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
             userFirstName: photos[randomPhotoNumber].user.first_name,
             userProfileLink: photos[randomPhotoNumber].user.links.html,
             userProfileImage: photos[randomPhotoNumber].user.profile_image.medium,
@@ -125,6 +130,7 @@ export class App extends Component {
   }
 
   render() {
+    console.log(this.state.data)
     return (
         <div>
           <Searchbar onSubmit={this.changeLocation} onClick={this.changeLocation}/>
@@ -139,16 +145,17 @@ export class App extends Component {
               temp={this.state.data.main.temp}
               humidity={this.state.data.main.humidity}
               weather={this.state.data.weather[Object.keys(this.state.data.weather)[0]].description}
+              windSpeed={this.state.data.wind.speed}
             />
           }
-          <Unsplash
-            currentCityImage={this.state.currentCityImage}>
-          </Unsplash>
           <UnsplashUser
           userProfileLink={this.state.userProfileLink}
           userProfileImage={this.state.userProfileImage}
           userFirstName={this.state.userFirstName}>
           </UnsplashUser>
+          <Unsplash
+            currentCityImage={this.state.currentCityImage}>
+          </Unsplash>
         </div>
     );
   }

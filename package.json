@@ -10,6 +10,7 @@
     "react-scripts": "1.0.17",
     "universal-cookie": "^2.1.2",
     "unsplash-api": "^1.2.0",
+    "webfontloader": "^1.6.28",
     "xhr": "^2.4.1"
   },
   "scripts": {
