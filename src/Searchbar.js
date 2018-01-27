@@ -15,31 +15,12 @@ export class Searchbar extends React.Component {
   }
 
   render() {
-    const formStyle = {
-      margin: "20px 0",
-    }
-
-    const inputStyle = {
-      margin: "0",
-      borderRadius: "7px",
-      padding: "11px 15px",
-      border: "none"
-    }
-
-    const buttonStyle = {
-      margin: "0",
-      borderRadius: "7px",
-      border: "none",
-      padding: "7px 10px",
-      marginLeft: "10px",
-      marginTop: "-2px"
-    }
 
    return (
      <div>
-       <form style={formStyle} onSubmit={this.handleChange}>
-         <input style={inputStyle} ref={(input) => { this.textInput = input; }}  type="text" />
-         <button style={buttonStyle} onClick={this.handleChange}> Submit </button>
+       <form onSubmit={this.handleChange}>
+         <input ref={(input) => { this.textInput = input; }}  type="text" />
+         <button onClick={this.handleChange}> Submit </button>
        </form>
      </div>
    );

@@ -6,13 +6,12 @@ export class UnsplashUser extends React.Component {
   }
 
   render() {
-    const spanStyle = {
-      backgroundColor: "red",
-    }
     return (
-      <div style={spanStyle}>
-        <a target="_blank" href={this.props.userProfileLink}><img src={this.props.userProfileImage}/></a>
-        <p>{this.props.userFirstName}</p>
+      <div className="unsplashUser">
+        <div>
+          <a target="_blank" href={this.props.userProfileLink}><img src={this.props.userProfileImage}/></a>
+          <p>{this.props.userFirstName}</p>
+        </div>
       </div>
     );
   }

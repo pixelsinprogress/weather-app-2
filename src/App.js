@@ -11,12 +11,6 @@ import { Unsplash } from './Unsplash';
 import { UnsplashUser } from './UnsplashUser';
 import WebFont from 'webfontloader';
 
-WebFont.load({
-  google: {
-    families: ['Titillium Web:300,400,700', 'sans-serif']
-  }
-});
-
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -127,12 +121,18 @@ export class App extends Component {
 
     /* getCoords everytime, regardless if cachedLat exists */
     this.getCoords();
+
+    WebFont.load({
+      google: {
+        families: ['Heebo:100,300,500,400,700, 900', 'sans-serif']
+      }
+    });
   }
 
   render() {
     console.log(this.state.data)
     return (
-        <div>
+        <div className="App">
           <Searchbar onSubmit={this.changeLocation} onClick={this.changeLocation}/>
           {
             this.state.loading ?

@@ -56,9 +56,9 @@ export class Sentence extends React.Component {
 
   render() {
     return (
-      <div>
-        <p>{"It's"} {this.state.humidity} and {this.state.windSpeed}{"."}</p>
-        <p>Expect to see {this.state.weather}.</p>
+      <div className="descContainer">
+        <p className="desc">{"It's"} {this.state.humidity} and {this.state.windSpeed}{"."}</p>
+        <p className="desc">Expect to see {this.state.weather}.</p>
       </div>
     );
   }

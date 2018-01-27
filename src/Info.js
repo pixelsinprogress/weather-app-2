@@ -7,11 +7,11 @@ export class Info extends React.Component {
   }
 
   render() {
-
+    let temp = Math.floor(this.props.temp)
     return (
-      <div>
-        <h1>{ this.props.city }</h1>
-        <h1>{ this.props.temp }</h1>
+      <div className="info">
+        <p className="city">{ this.props.city }</p>
+        <h1 className="temp">{ temp }°</h1>
         <Sentence
           humidity={ this.props.humidity }
           weather={ this.props.weather }
