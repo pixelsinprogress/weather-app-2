@@ -106,8 +106,9 @@ export class App extends Component {
   setCoordsFromLocalStorage(cachedLat, cachedLon) {
     this.setState({
       latitude: cachedLat,
-      longitude: cachedLon,
-      loading: false,
+      longitude: cachedLon
+    }, () => {
+      this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
     });
   }
 
@@ -117,10 +118,10 @@ export class App extends Component {
     let cachedLon = localStorage.getItem('longitude');
 
     /* checks to see if a lat already exists. If so, then no need to getCoords() */
-    //cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
+    cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
 
     /* getCoords everytime, regardless if cachedLat exists */
-    this.getCoords();
+    //this.getCoords();
 
     WebFont.load({
       google: {
@@ -130,7 +131,6 @@ export class App extends Component {
   }
 
   render() {
-    console.log(this.state.data)
     return (
         <div className="App">
           <Searchbar onSubmit={this.changeLocation} onClick={this.changeLocation}/>

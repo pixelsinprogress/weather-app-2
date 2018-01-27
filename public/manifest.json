@@ -9,5 +9,8 @@
   "permissions": [
     "geolocation"
   ],
+  "icons": { "16": "weather16.png",
+             "48": "weather48.png",
+             "128": "weather128.png" },
   "version": "1.0"
 }

@@ -6,7 +6,6 @@ export class Sentence extends React.Component {
   }
 
   getHumidity(humidity) {
-    console.log(humidity)
     let humidityPhrase = ''
     if (humidity <= 40) {
       humidityPhrase = 'not that humid'
@@ -21,7 +20,6 @@ export class Sentence extends React.Component {
   }
 
   getWindSpeed(windSpeed) {
-    console.log(windSpeed)
     let windPhrase = ''
     if (windSpeed <= 12) {
       windPhrase = 'breezy'
@@ -36,12 +34,22 @@ export class Sentence extends React.Component {
   }
 
   getWeatherDesc(weather) {
-    console.log(weather == "few clouds")
+    const aArray = [
+      "clear sky",
+      "few clouds",
+      "shower rain",
+      "thunderstorm",
+      "few clouds"
+    ]
+    console.log(weather)
     let weatherDesc = ''
-    if (weather == "clear sky" || "few clouds" || "shower rain" || "thunderstorm" || "few clouds") {
-      weatherDesc = 'a ' + weather
-    } else {
-      weatherDesc = 'some ' + weather
+    let i = 0
+    for (i = 0; i < aArray.length; i++) {
+      if (weather == aArray[i]) {
+        weatherDesc = 'a ' + weather;
+      } else {
+        weatherDesc = 'some ' + weather;
+      }
     }
     this.setState({
       weather: weatherDesc
@@ -57,8 +65,8 @@ export class Sentence extends React.Component {
   render() {
     return (
       <div className="descContainer">
-        <p className="desc">{"It's"} {this.state.humidity} and {this.state.windSpeed}{"."}</p>
-        <p className="desc">Expect to see {this.state.weather}.</p>
+        <p className="desc">{"It's"} {this.state.humidity} and {this.state.windSpeed}</p>
+        <p className="desc">Expect to see {this.state.weather}</p>
       </div>
     );
   }

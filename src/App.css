@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   width: 400px;
+  height: 500px;
   background-color: black;
   font-family: 'Heebo', sans-serif;
   font-size: 16px;
@@ -35,10 +36,6 @@ button {
   padding: 7px 10px;
   margin-left: 10px;
   margin-top: -2px;
-}
-
-input: focus, button: focus {
-  outline: none;
 }
 
 .App {
