@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/react-backend/node_modules/
+/react-backend/bin/
 
 # testing
 /coverage
