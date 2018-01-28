@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^4.0.0",
     "html-to-json": "^0.6.0",
     "react": "^16.2.0",
     "react-cookie": "^2.1.2",
     "react-dom": "^16.2.0",
     "react-scripts": "1.0.17",
+    "react-spinners": "^0.2.5",
     "universal-cookie": "^2.1.2",
     "unsplash-api": "^1.2.0",
     "webfontloader": "^1.6.28",
@@ -18,5 +20,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }

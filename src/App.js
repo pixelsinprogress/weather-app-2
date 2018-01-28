@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import './App.css';
-import { ChangeCity } from './ChangeCity';
 import { Info } from './Info';
 import { Searchbar } from './Searchbar';
 import { PulseLoader } from 'react-spinners';
@@ -15,6 +14,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      users: [],
       location: null,
       latitude: null,
       longitude: null,
@@ -136,12 +136,20 @@ export class App extends Component {
         families: ['Heebo:100,300,500,400,700, 900', 'sans-serif']
       }
     });
+
+    fetch('/users')
+    .then(res => res.json())
+    .then(users => this.setState({ users }));
   }
 
   render() {
 
     return (
         <div className="App">
+        <h1>Users</h1>
+        {this.state.users.map(user =>
+          <div key={user.id}>{user.username}</div>
+        )}
           <Searchbar errorClass={this.state.errorClass} onSubmit={this.changeLocation} onClick={this.changeLocation}/>
           {
             this.state.loading ?
