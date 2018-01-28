@@ -1,5 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/react-backend/node_modules
-/react-backend/bin
+/react-backend/node_modules/
+/react-backend/bin/
