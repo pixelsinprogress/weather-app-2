@@ -10,6 +10,7 @@ export class Info extends React.Component {
     let temp = Math.floor(this.props.temp)
     return (
       <div className="info">
+        <p>{ this.props.errorText }</p>
         <p className="city">{ this.props.city }</p>
         <h1 className="temp">{ temp }°</h1>
         <Sentence

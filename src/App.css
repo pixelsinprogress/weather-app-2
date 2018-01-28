@@ -9,6 +9,10 @@ body {
   color: white;
 }
 
+.loader {
+  color: white;
+}
+
 h1 {
   text-align: center;
 }
@@ -27,6 +31,8 @@ input {
   border-radius: 7px;
   padding: 11px 15px;
   border: none;
+  outline: none;
+  box-shadow: 0px 3px 10px #212121;
 }
 
 button {
@@ -36,13 +42,26 @@ button {
   padding: 7px 10px;
   margin-left: 10px;
   margin-top: -2px;
+  outline: none;
+  box-shadow: 0px 3px 10px #212121;
+  transition: all 0.2s ease;
 }
 
-.App {
+button:hover {
+  background-color: lightgray;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.loader {
+  margin: 120px auto;
+  text-align: center;
 }
 
 .info {
-  margin-top: 70px;
+  margin: 70px 0;
 }
 
 .city {

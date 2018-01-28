@@ -41,7 +41,6 @@ export class Sentence extends React.Component {
       "thunderstorm",
       "few clouds"
     ]
-    console.log(weather)
     let weatherDesc = ''
     let i = 0
     for (i = 0; i < aArray.length; i++) {
@@ -57,6 +56,12 @@ export class Sentence extends React.Component {
   }
 
   componentWillMount() {
+    this.getHumidity(this.props.humidity)
+    this.getWindSpeed(this.props.windSpeed)
+    this.getWeatherDesc(this.props.weather)
+  }
+
+  componentWillReceiveProps(nextProps) {
     this.getHumidity(this.props.humidity)
     this.getWindSpeed(this.props.windSpeed)
     this.getWeatherDesc(this.props.weather)

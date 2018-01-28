@@ -50,9 +50,17 @@ export class App extends Component {
 
     xhr({
       url: url
-    }, function (err, data) {
+    }, function (err,resp, data) {
+      const dataOBJ = JSON.parse(data)
+      resp.statusCode == "404" ?
       self.setState({
-        data: JSON.parse(data.body) //parse the data.body HTML string into an object, set it to the data prop in state
+        errorText: "That city doesn't exist",
+        errorClass: 'error'
+      }) :
+      self.setState({
+        errorText: '',
+        errorClass: '',
+        data: dataOBJ
       }, () => {
         let cityName = self.state.data.name
         var randomPhotoNumber = Math.floor(Math.random() * 10);
@@ -131,13 +139,16 @@ export class App extends Component {
   }
 
   render() {
+
     return (
         <div className="App">
-          <Searchbar onSubmit={this.changeLocation} onClick={this.changeLocation}/>
+          <Searchbar errorClass={this.state.errorClass} onSubmit={this.changeLocation} onClick={this.changeLocation}/>
           {
             this.state.loading ?
-            <PulseLoader /> :
+            <div className="loader"><PulseLoader color="white" /></div> :
             <Info
+              errorText={this.state.errorText}
+              formError={this.state.formError}
               location={this.state.location}
               lat={this.state.latitude}
               lon={this.state.longitude}
