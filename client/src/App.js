@@ -94,14 +94,9 @@ export class App extends Component {
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.setState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }, () => {
-            localStorage.setItem('latitude', this.state.latitude);
-            localStorage.setItem('longitude', this.state.longitude);
-            this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
-          });
+          this.callApi(position.coords.latitude, position.coords.longitude)
+            .then(res => this.setState({ response: res.express }))
+            .catch(err => console.log(err));
         },
         (error) => {
           this.setState({
@@ -114,40 +109,13 @@ export class App extends Component {
     }
   }
 
-  setCoordsFromLocalStorage(cachedLat, cachedLon) {
-    this.setState({
-      latitude: cachedLat,
-      longitude: cachedLon
-    }, () => {
-      this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
-    });
-  }
-
   // When the component mounts, set the lat and lon in state
   componentDidMount() {
-    let cachedLat = localStorage.getItem('latitude');
-    let cachedLon = localStorage.getItem('longitude');
-
-    /* checks to see if a lat already exists. If so, then no need to getCoords() */
-    cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
-
-    /* getCoords everytime, regardless if cachedLat exists */
-    //this.getCoords();
-
-    WebFont.load({
-      google: {
-        families: ['Heebo:100,300,500,400,700, 900', 'sans-serif']
-      }
-    });
-
-/* call express server */
-  this.callApi()
-      .then(res => this.setState({ response: res.express }))
-      .catch(err => console.log(err));
+    this.getCoords()
   }
 
-  callApi = async () => {
-    const response = await fetch('/api/weather');
+  callApi = async (latitude, longitude) => {
+    const response = await fetch('/api/weather?latitude=' + latitude + '&longitude=' + longitude);
     const body = await response.json();
 
     if (response.status !== 200) throw Error(body.message);
@@ -156,7 +124,6 @@ export class App extends Component {
   };
 
   render() {
-
     return (
         <div className="App">
         <h1>{this.state.response}</h1>

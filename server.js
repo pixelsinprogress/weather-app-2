@@ -5,7 +5,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.get('/api/weather', (req, res) => {
-  request('http://api.openweathermap.org/data/2.5/weather?lat=39.3044077&lon=-76.61711810000001&APPID=70f1a80f7be9d0f99a01693ffe6fedf1&units=imperial', function(error, response, body) {
+  let latitude  = req.query.latitude;
+  let longitude = req.query.longitude;
+  request('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=70f1a80f7be9d0f99a01693ffe6fedf1&units=imperial', function(error, response, body) {
     console.log(error);
     res.send(body)
   });
