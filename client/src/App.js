@@ -14,7 +14,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      response: '',
       location: null,
       latitude: null,
       longitude: null,
@@ -137,19 +137,26 @@ export class App extends Component {
       }
     });
 
-    fetch('/users')
-    .then(res => res.json())
-    .then(users => this.setState({ users }));
+/* call express server */
+  this.callApi()
+      .then(res => this.setState({ response: res.express }))
+      .catch(err => console.log(err));
   }
+
+  callApi = async () => {
+    const response = await fetch('/api/hello');
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
 
   render() {
 
     return (
         <div className="App">
-        <h1>Users</h1>
-        {this.state.users.map(user =>
-          <div key={user.id}>{user.username}</div>
-        )}
+        <h1>{this.state.response}</h1>
           <Searchbar errorClass={this.state.errorClass} onSubmit={this.changeLocation} onClick={this.changeLocation}/>
           {
             this.state.loading ?

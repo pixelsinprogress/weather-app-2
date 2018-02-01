@@ -2,8 +2,7 @@
 
 # dependencies
 /node_modules
-/react-backend/node_modules/
-/react-backend/bin/
+/client/node_modules/
 
 # testing
 /coverage
