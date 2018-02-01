@@ -50,7 +50,7 @@ export class App extends Component {
 
     xhr({
       url: url
-    }, function (err,resp, data) {
+    }, function (err, resp, data) {
       const dataOBJ = JSON.parse(data)
       resp.statusCode == "404" ?
       self.setState({
@@ -64,15 +64,18 @@ export class App extends Component {
       }, () => {
         let cityName = self.state.data.name
         var randomPhotoNumber = Math.floor(Math.random() * 10);
-        unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
-          self.setState({
-            currentCityImage: photos[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
-            userFirstName: photos[randomPhotoNumber].user.first_name,
-            userProfileLink: photos[randomPhotoNumber].user.links.html,
-            userProfileImage: photos[randomPhotoNumber].user.profile_image.medium,
-            loading: false,
-          });
-        });
+        // unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
+        //   self.setState({
+        //     currentCityImage: photos[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
+        //     userFirstName: photos[randomPhotoNumber].user.first_name,
+        //     userProfileLink: photos[randomPhotoNumber].user.links.html,
+        //     userProfileImage: photos[randomPhotoNumber].user.profile_image.medium,
+        //     loading: false,
+        //   });
+        // });
+        self.setState({
+          loading: false
+        })
       });
     });
   }
@@ -144,7 +147,7 @@ export class App extends Component {
   }
 
   callApi = async () => {
-    const response = await fetch('/api/hello');
+    const response = await fetch('/api/weather');
     const body = await response.json();
 
     if (response.status !== 200) throw Error(body.message);
