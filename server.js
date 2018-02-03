@@ -1,15 +1,24 @@
 const express = require('express');
 const request = require('request');
+// const unsplash=  require('unsplash-api');
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+
+// const unsplashID = 'b77676106b291bc909b98e44aeebd92679a5bec391fb3bb1f91a5b3f2bac13e9';
+// const unsplashSecret = '2cebf8091d2c6837334866b68aa4b1777884b699b58208deb5b2970b281f6b7c';
+
+
 app.get('/api/weather', (req, res) => {
-  let latitude  = req.query.latitude;
-  let longitude = req.query.longitude;
-  request('http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&APPID=70f1a80f7be9d0f99a01693ffe6fedf1&units=imperial', function(error, response, body) {
-    console.log(error);
-    res.send(body)
+  let weatherKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
+  let urlSuffix = '&APPID=' + weatherKey + "&units=imperial";
+  let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
+  let coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
+  let latAndLon = "lat=" + req.query.latitude + '&' + "lon=" + req.query.longitude;
+  let url = coordsURLPrefix + latAndLon + urlSuffix;
+  request(url, function(error, response, body) {
+    res.send(body);
   });
 });
 
