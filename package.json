@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "express": "^4.16.2",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "unsplash-js": "^4.8.0"
   },
   "devDependencies": {
     "concurrently": "^3.5.0"

@@ -26,6 +26,7 @@ export class App extends Component {
     unsplash.init(this.state.unsplashID);
   }
 
+  /*
   fetchData(lat, lon, location) {
 
     let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
@@ -80,12 +81,16 @@ export class App extends Component {
     });
   }
 
+  */
+
   //location in state is set to the what the user types in teh search bar
   changeLocation(location) {
     this.setState({
       location: location
     }, () => {
-      this.fetchData(this.state.latitude, this.state.longitude, this.state.location);
+      this.callLocation(this.state.location)
+        .then(res => this.setState({ response: res.express }))
+        .catch(err => console.log(err));
     });
   }
 
@@ -109,6 +114,28 @@ export class App extends Component {
     }
   }
 
+  callUnsplash = async (location) => {
+    const response = await fetch('/api/unsplash?location=' + location);
+    const body = await response.json();
+    //
+    // if (response.status !== 200) throw Error(body.message);
+    // //console.log(body.name);
+    console.log(body);
+  };
+
+  callLocation = async (location) => {
+    const response = await fetch('/api/location?location=' + location);
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+    console.log(body.name);
+    //this.callUnsplash(body.name)
+    this.setState({
+      data: body
+    })
+    return body;
+  };
+
   // When the component mounts, set the lat and lon in state
   componentDidMount() {
     this.getCoords()
@@ -120,6 +147,11 @@ export class App extends Component {
 
     if (response.status !== 200) throw Error(body.message);
     console.log(body.name);
+    //this.callUnsplash(body.name)
+    this.setState({
+      data: body,
+      loading: false
+    })
     return body;
   };
 

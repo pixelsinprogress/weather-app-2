@@ -15,7 +15,7 @@ export class Searchbar extends React.Component {
   }
 
   render() {
-   console.log("errorClass: " + this.props.errorClass)
+   //console.log("errorClass: " + this.props.errorClass)
    return (
      <div>
        <form onSubmit={this.handleChange}>
