@@ -19,87 +19,36 @@ export class App extends Component {
       latitude: null,
       longitude: null,
       loading: true,
-      unsplashID: 'b77676106b291bc909b98e44aeebd92679a5bec391fb3bb1f91a5b3f2bac13e9',
-      unsplashSecret: '2cebf8091d2c6837334866b68aa4b1777884b699b58208deb5b2970b281f6b7c'
     };
     this.changeLocation = this.changeLocation.bind(this); //'this' in the changeLocation func is referring to the App component
     unsplash.init(this.state.unsplashID);
   }
 
-  /*
-  fetchData(lat, lon, location) {
+  /**************************************************/
+  // 1.) Grab geocoords from browser and pass to server.
+  /**************************************************/
 
-    let locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
-    let coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
+  // GET request w/ coords
+  callApiWithCoords = async (latitude, longitude) => {
+    let response = await fetch('/api/coords?latitude=' + latitude + '&longitude=' + longitude);
+    let body = await response.json();
 
-    let urllocation = encodeURIComponent(location);
-    let latAndLon = "lat=" + lat + '&' + "lon=" + lon;
-
-    let mattKey = 'aca10c3987b461277deb339c916a5c20' //Matt's API key
-    let nitinKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
-    let urlSuffix = '&APPID=' + nitinKey + "&units=imperial";
-
-    let url = ''
-
-    if (location == null ) {
-      url = coordsURLPrefix + latAndLon + urlSuffix;
-    } else {
-      url = locationURLPrefix + location + urlSuffix;
-    }
-
-    let self = this;
-
-    xhr({
-      url: url
-    }, function (err, resp, data) {
-      const dataOBJ = JSON.parse(data)
-      resp.statusCode == "404" ?
-      self.setState({
-        errorText: "That city doesn't exist",
-        errorClass: 'error'
-      }) :
-      self.setState({
-        errorText: '',
-        errorClass: '',
-        data: dataOBJ
-      }, () => {
-        let cityName = self.state.data.name
-        var randomPhotoNumber = Math.floor(Math.random() * 10);
-        // unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
-        //   self.setState({
-        //     currentCityImage: photos[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
-        //     userFirstName: photos[randomPhotoNumber].user.first_name,
-        //     userProfileLink: photos[randomPhotoNumber].user.links.html,
-        //     userProfileImage: photos[randomPhotoNumber].user.profile_image.medium,
-        //     loading: false,
-        //   });
-        // });
-        self.setState({
-          loading: false
-        })
-      });
-    });
-  }
-
-  */
-
-  //location in state is set to the what the user types in teh search bar
-  changeLocation(location) {
+    if (response.status !== 200) throw Error(body.message);
+    console.log(body.name);
+    //this.callUnsplash(body.name)
     this.setState({
-      location: location
-    }, () => {
-      this.callLocation(this.state.location)
-        .then(res => this.setState({ response: res.express }))
-        .catch(err => console.log(err));
-    });
-  }
+      data: body,
+      loading: false
+    })
+    return body;
+  };
 
-  // grab the geolocation from the window obj. After setting state, call fetchData() to make API call with lat and lon
+  // Grab geocoords from browser window
   getCoords() {
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.callApi(position.coords.latitude, position.coords.longitude)
+          this.callApiWithCoords(position.coords.latitude, position.coords.longitude)
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
         },
@@ -114,36 +63,14 @@ export class App extends Component {
     }
   }
 
-  callUnsplash = async (location) => {
-    const response = await fetch('/api/unsplash?location=' + location);
-    const body = await response.json();
-    //
-    // if (response.status !== 200) throw Error(body.message);
-    // //console.log(body.name);
-    console.log(body);
-  };
+  /**************************************************/
+  // 2.) Grab location from Searchbar.js and pass to server.
+  /**************************************************/
 
-  callLocation = async (location) => {
-    const response = await fetch('/api/location?location=' + location);
-    const body = await response.json();
-
-    if (response.status !== 200) throw Error(body.message);
-    console.log(body.name);
-    //this.callUnsplash(body.name)
-    this.setState({
-      data: body
-    })
-    return body;
-  };
-
-  // When the component mounts, set the lat and lon in state
-  componentDidMount() {
-    this.getCoords()
-  }
-
-  callApi = async (latitude, longitude) => {
-    const response = await fetch('/api/weather?latitude=' + latitude + '&longitude=' + longitude);
-    const body = await response.json();
+  // GET request w/ location from Searchbar.js
+  callApiWithLocation = async (location) => {
+    let response = await fetch('/api/location?location=' + location);
+    let body = await response.json();
 
     if (response.status !== 200) throw Error(body.message);
     console.log(body.name);
@@ -154,6 +81,25 @@ export class App extends Component {
     })
     return body;
   };
+
+  // Grab location from Searchbar.js and set state
+  changeLocation(location) {
+    this.setState({
+      location: location
+    }, () => {
+      this.callApiWithLocation(this.state.location)
+        .then(res => this.setState({ response: res.express }))
+        .catch(err => console.log(err));
+    });
+  }
+
+  /**************************************************/
+  // END
+  /**************************************************/
+
+  componentDidMount() {
+    this.getCoords()
+  }
 
   render() {
     return (
@@ -190,3 +136,12 @@ export class App extends Component {
 }
 
 export default App;
+
+// callUnsplash = async (location) => {
+//   const response = await fetch('/api/unsplash?location=' + location);
+//   const body = await response.json();
+//   //
+//   // if (response.status !== 200) throw Error(body.message);
+//   // //console.log(body.name);
+//   console.log(body);
+// };
