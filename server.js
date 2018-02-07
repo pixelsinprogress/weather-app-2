@@ -11,11 +11,21 @@ var coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
 var urlSuffix = '&APPID=' + weatherKey + "&units=imperial";
 
 app.get('/api/coords', (req, res) => {
+  let location = req.query.location;
   let latAndLon = "lat=" + req.query.latitude + '&' + "lon=" + req.query.longitude;
-  let url = coordsURLPrefix + latAndLon + urlSuffix;
-  request(url, function(error, response, body) {
-    res.send(body);
-  });
+
+  if (location == "geo") {
+    let url = coordsURLPrefix + latAndLon + urlSuffix;
+    request(url, function(error, response, body) {
+      res.send(body);
+    });
+  } else {
+    let url = locationURLPrefix + location + urlSuffix;
+    request(url, function(error, response, body) {
+      res.send(body);
+    });
+  }
+
 });
 
 app.get('/api/location', (req, res) => {

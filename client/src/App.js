@@ -29,8 +29,8 @@ export class App extends Component {
   /**************************************************/
 
   // GET request w/ coords
-  callApiWithCoords = async (latitude, longitude) => {
-    let response = await fetch('/api/coords?latitude=' + latitude + '&longitude=' + longitude);
+  callApiWithCoords = async (latitude, longitude, location) => {
+    let response = await fetch('/api/coords?latitude=' + latitude + '&longitude=' + longitude + '&location=' + location);
     let body = await response.json();
 
     if (response.status !== 200) throw Error(body.message);
@@ -48,7 +48,7 @@ export class App extends Component {
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.callApiWithCoords(position.coords.latitude, position.coords.longitude)
+          this.callApiWithCoords(position.coords.latitude, position.coords.longitude, "baltimore")
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
         },
