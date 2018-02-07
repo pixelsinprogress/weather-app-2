@@ -35,7 +35,8 @@ export class App extends Component {
 
     if (response.status !== 200) throw Error(body.message);
     console.log(body.name);
-    //this.callUnsplash(body.name)
+
+    this.callUnsplashApi(body.name)
     this.setState({
       data: body,
       loading: false
@@ -48,7 +49,7 @@ export class App extends Component {
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.callApiWithCoords(position.coords.latitude, position.coords.longitude, "baltimore")
+          this.callApiWithCoords(position.coords.latitude, position.coords.longitude, "geo")
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
         },
@@ -95,6 +96,27 @@ export class App extends Component {
         .catch(err => console.log(err));
     });
   }
+
+  /**************************************************/
+  // 2.) Grab Unsplash
+  /**************************************************/
+
+  // GET request w/ coords
+  callUnsplashApi = async (location) => {
+    let response = await fetch('/api/unsplash?location=' + location);
+    let body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+    console.log(body);
+    var randomPhotoNumber = Math.floor(Math.random() * 10);
+    this.setState({
+      currentCityImage: body[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
+      userFirstName: body[randomPhotoNumber].user.first_name,
+      userProfileLink: body[randomPhotoNumber].user.links.html,
+      userProfileImage: body[randomPhotoNumber].user.profile_image.medium
+    });
+    return body;
+  };
 
   /**************************************************/
   // END

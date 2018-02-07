@@ -1,9 +1,14 @@
 const express = require('express');
 const request = require('request');
-//const unsplash = require('unsplash-api');
+const unsplash = require('unsplash-api');
 
 const app = express();
 const port = process.env.PORT || 5000
+
+var unsplashID = 'b77676106b291bc909b98e44aeebd92679a5bec391fb3bb1f91a5b3f2bac13e9'
+var unsplashSecret = '2cebf8091d2c6837334866b68aa4b1777884b699b58208deb5b2970b281f6b7c'
+
+unsplash.init(unsplashID);
 
 var weatherKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
 var locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
@@ -25,8 +30,20 @@ app.get('/api/coords', (req, res) => {
       res.send(body);
     });
   }
-
 });
+
+app.get('/api/unsplash', (req, res) => {
+  let location = req.query.location;
+  unsplash.searchPhotos(location, null, null, null, function(error, photos, link) {
+    body = photos;
+    res.send(body);
+  });
+});
+
+
+// unsplash.searchPhotos(cityName, null, null, null, function(error, photos, link) {
+//   res.send(photos);
+// });
 
 // app.get('/api/location', (req, res) => {
 //   let location = req.query.location;
