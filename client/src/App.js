@@ -68,6 +68,8 @@ export class App extends Component {
   /**************************************************/
 
   // GET request w/ location from Searchbar.js
+
+  /*
   callApiWithLocation = async (location) => {
     let response = await fetch('/api/location?location=' + location);
     let body = await response.json();
@@ -81,13 +83,14 @@ export class App extends Component {
     })
     return body;
   };
+  */
 
   // Grab location from Searchbar.js and set state
   changeLocation(location) {
     this.setState({
       location: location
     }, () => {
-      this.callApiWithLocation(this.state.location)
+      this.callApiWithCoords("latitude", "longitude", this.state.location)
         .then(res => this.setState({ response: res.express }))
         .catch(err => console.log(err));
     });

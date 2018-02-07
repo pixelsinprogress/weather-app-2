@@ -28,13 +28,13 @@ app.get('/api/coords', (req, res) => {
 
 });
 
-app.get('/api/location', (req, res) => {
-  let location = req.query.location;
-  let url = locationURLPrefix + location + urlSuffix;
-  request(url, function(error, response, body) {
-    res.send(body);
-  });
-});
+// app.get('/api/location', (req, res) => {
+//   let location = req.query.location;
+//   let url = locationURLPrefix + location + urlSuffix;
+//   request(url, function(error, response, body) {
+//     res.send(body);
+//   });
+// });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
