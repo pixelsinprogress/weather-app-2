@@ -7,6 +7,7 @@
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },
   "dependencies": {
+    "dotenv": "^5.0.0",
     "express": "^4.16.2",
     "request": "^2.83.0",
     "unsplash-api": "^1.2.0",

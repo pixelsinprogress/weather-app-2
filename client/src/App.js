@@ -46,9 +46,13 @@ export class App extends Component {
 
   // Grab geocoords from browser window
   getCoords() {
+    console.log("getcoords");
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          localStorage.setItem('latitude', position.coords.latitude);
+          localStorage.setItem('longitude', position.coords.longitude);
+          console.log(localStorage);
           this.callApiWithCoords(position.coords.latitude, position.coords.longitude, "geo")
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
@@ -122,8 +126,29 @@ export class App extends Component {
   // END
   /**************************************************/
 
+  setCoordsFromLocalStorage(cachedLat, cachedLon) {
+    console.log("setCoords");
+    this.setState({
+      latitude: cachedLat,
+      longitude: cachedLon
+    }, () => {
+      this.callApiWithCoords(this.state.latitude, this.state.longitude, "geo")
+        .then(res => this.setState({ response: res.express }))
+        .catch(err => console.log(err));
+    });
+  }
+
   componentDidMount() {
-    this.getCoords()
+    console.log(localStorage);
+    let cachedLat = localStorage.getItem('latitude');
+    let cachedLon = localStorage.getItem('longitude');
+
+    /* checks to see if a lat already exists. If so, then no need to getCoords() */
+    cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
+    // !cachedLat ? console.log('hi') : console.log('bye')
+    // console.log(cachedLat);
+    //this.getCoords()
+
   }
 
   render() {
