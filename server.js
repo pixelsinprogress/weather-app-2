@@ -7,7 +7,6 @@ require('dotenv').config()
 
 unsplash.init(process.env.UNSPLASH_ID);
 
-//var weatherKey = '70f1a80f7be9d0f99a01693ffe6fedf1' //Nitin's API key
 var weatherKey = process.env.WEATHER_KEY //Nitin's API key
 var locationURLPrefix = "http://api.openweathermap.org/data/2.5/weather?q=";
 var coordsURLPrefix = "http://api.openweathermap.org/data/2.5/weather?";
