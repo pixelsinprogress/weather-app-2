@@ -4,11 +4,15 @@ import './App.css';
 import { Info } from './Info';
 import { Searchbar } from './Searchbar';
 import { PulseLoader } from 'react-spinners';
-import unsplash from 'unsplash-api';
-import xhr from 'xhr';
 import { Unsplash } from './Unsplash';
 import { UnsplashUser } from './UnsplashUser';
 import WebFont from 'webfontloader';
+
+WebFont.load({
+  google: {
+    families: ['Titillium Web:300,400,700', 'sans-serif']
+  }
+});
 
 export class App extends Component {
   constructor(props) {
@@ -21,21 +25,31 @@ export class App extends Component {
       loading: true,
     };
     this.changeLocation = this.changeLocation.bind(this); //'this' in the changeLocation func is referring to the App component
-    unsplash.init(this.state.unsplashID);
   }
 
-  /**************************************************/
-  // 1.) Grab geocoords from browser and pass to server.
-  /**************************************************/
-
-  // GET request w/ coords
-  callApiWithCoords = async (latitude, longitude, location) => {
-    let response = await fetch('/api/coords?latitude=' + latitude + '&longitude=' + longitude + '&location=' + location);
+  // fetch unsplash
+  callUnsplashApi = async (location) => {
+    let response = await fetch('/api/unsplash?location=' + location);
     let body = await response.json();
 
     if (response.status !== 200) throw Error(body.message);
-    console.log(body.name);
 
+    var randomPhotoNumber = Math.floor(Math.random() * 10);
+    this.setState({
+      currentCityImage: body[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
+      userFirstName: body[randomPhotoNumber].user.first_name,
+      userProfileLink: body[randomPhotoNumber].user.links.html,
+      userProfileImage: body[randomPhotoNumber].user.profile_image.medium
+    });
+    return body;
+  };
+
+  // fetch weather
+  callWeatherApi = async (latitude, longitude, location) => {
+    let response = await fetch('/api/weather?latitude=' + latitude + '&longitude=' + longitude + '&location=' + location);
+    let body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
     this.callUnsplashApi(body.name)
     this.setState({
       data: body,
@@ -44,7 +58,18 @@ export class App extends Component {
     return body;
   };
 
-  // Grab geocoords from browser window
+  // 4. Grab location from Searchbar and then callWeatherApi
+  changeLocation(location) {
+    this.setState({
+      location: location
+    }, () => {
+      this.callWeatherApi("latitude", "longitude", this.state.location)
+        .then(res => this.setState({ response: res.express }))
+        .catch(err => console.log(err));
+    });
+  }
+
+  // 3. Grab geocoords from browser window, then callApiWithCoords
   getCoords() {
     console.log("getcoords");
     if (window.navigator.geolocation) { // if geolocation is supported
@@ -53,7 +78,7 @@ export class App extends Component {
           localStorage.setItem('latitude', position.coords.latitude);
           localStorage.setItem('longitude', position.coords.longitude);
           console.log(localStorage);
-          this.callApiWithCoords(position.coords.latitude, position.coords.longitude, "geo")
+          this.callWeatherApi(position.coords.latitude, position.coords.longitude, "geo")
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
         },
@@ -68,87 +93,26 @@ export class App extends Component {
     }
   }
 
-  /**************************************************/
-  // 2.) Grab location from Searchbar.js and pass to server.
-  /**************************************************/
-
-  // GET request w/ location from Searchbar.js
-
-  /*
-  callApiWithLocation = async (location) => {
-    let response = await fetch('/api/location?location=' + location);
-    let body = await response.json();
-
-    if (response.status !== 200) throw Error(body.message);
-    console.log(body.name);
-    //this.callUnsplash(body.name)
-    this.setState({
-      data: body,
-      loading: false
-    })
-    return body;
-  };
-  */
-
-  // Grab location from Searchbar.js and set state
-  changeLocation(location) {
-    this.setState({
-      location: location
-    }, () => {
-      this.callApiWithCoords("latitude", "longitude", this.state.location)
-        .then(res => this.setState({ response: res.express }))
-        .catch(err => console.log(err));
-    });
-  }
-
-  /**************************************************/
-  // 2.) Grab Unsplash
-  /**************************************************/
-
-  // GET request w/ coords
-  callUnsplashApi = async (location) => {
-    let response = await fetch('/api/unsplash?location=' + location);
-    let body = await response.json();
-
-    if (response.status !== 200) throw Error(body.message);
-    console.log(body);
-    var randomPhotoNumber = Math.floor(Math.random() * 10);
-    this.setState({
-      currentCityImage: body[randomPhotoNumber].urls.regular, //parse the data.body HTML string into an object, set it to the data prop in state
-      userFirstName: body[randomPhotoNumber].user.first_name,
-      userProfileLink: body[randomPhotoNumber].user.links.html,
-      userProfileImage: body[randomPhotoNumber].user.profile_image.medium
-    });
-    return body;
-  };
-
-  /**************************************************/
-  // END
-  /**************************************************/
-
+  // 2. callWeatherApi with cached coords
   setCoordsFromLocalStorage(cachedLat, cachedLon) {
     console.log("setCoords");
     this.setState({
       latitude: cachedLat,
       longitude: cachedLon
     }, () => {
-      this.callApiWithCoords(this.state.latitude, this.state.longitude, "geo")
+      this.callWeatherApi(this.state.latitude, this.state.longitude, "geo")
         .then(res => this.setState({ response: res.express }))
         .catch(err => console.log(err));
     });
   }
 
+  // 1. When component mounts, set cached variables, if lat exists then callWeatherApi, if not then get lat and lon and callWeatherApi
   componentDidMount() {
-    console.log(localStorage);
     let cachedLat = localStorage.getItem('latitude');
     let cachedLon = localStorage.getItem('longitude');
 
-    /* checks to see if a lat already exists. If so, then no need to getCoords() */
-    cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords()
-    // !cachedLat ? console.log('hi') : console.log('bye')
-    // console.log(cachedLat);
-    //this.getCoords()
-
+    // checks to see if a lat already exists. If so, then no need to getCoords()
+    cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords();
   }
 
   render() {
@@ -186,12 +150,3 @@ export class App extends Component {
 }
 
 export default App;
-
-// callUnsplash = async (location) => {
-//   const response = await fetch('/api/unsplash?location=' + location);
-//   const body = await response.json();
-//   //
-//   // if (response.status !== 200) throw Error(body.message);
-//   // //console.log(body.name);
-//   console.log(body);
-// };

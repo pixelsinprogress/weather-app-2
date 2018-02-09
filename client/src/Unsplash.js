@@ -8,7 +8,6 @@ export class Unsplash extends React.Component {
   render() {
     const divStyle = {
       color: 'blue',
-      //backgroundImage: 'url(' + this.props.currentCityImage + ')',
       backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.85))," + 'url(' + this.props.currentCityImage + ')',
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",

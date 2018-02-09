@@ -7,15 +7,12 @@ export class Searchbar extends React.Component {
   }
 
   handleChange(evt) {
-    //debugger;
-    //console.log(this.textInput.value)
     evt.preventDefault();
     const location = this.textInput.value;
     this.props.onClick(location);
   }
 
   render() {
-   //console.log("errorClass: " + this.props.errorClass)
    return (
      <div>
        <form onSubmit={this.handleChange}>

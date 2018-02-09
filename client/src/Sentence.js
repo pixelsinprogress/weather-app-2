@@ -39,17 +39,16 @@ export class Sentence extends React.Component {
       "few clouds",
       "shower rain",
       "thunderstorm",
-      "few clouds"
     ]
+
     let weatherDesc = ''
-    let i = 0
-    for (i = 0; i < aArray.length; i++) {
-      if (weather == aArray[i]) {
-        weatherDesc = 'a ' + weather;
-      } else {
-        weatherDesc = 'some ' + weather;
-      }
+
+    if (aArray.indexOf(weather) != -1) {
+      weatherDesc = 'a ' + weather;
+    } else {
+      weatherDesc = 'some ' + weather;
     }
+
     this.setState({
       weather: weatherDesc
     });
@@ -70,9 +69,10 @@ export class Sentence extends React.Component {
   render() {
     return (
       <div className="descContainer">
-        <p className="desc">{"It's"} {this.state.humidity} and {this.state.windSpeed}</p>
         <p className="desc">Expect to see {this.state.weather}</p>
       </div>
     );
   }
 }
+
+//<p className="desc">{"It's"} {this.state.humidity} and {this.state.windSpeed}</p>
