@@ -95,7 +95,6 @@ export class App extends Component {
 
   // 2. callWeatherApi with cached coords
   setCoordsFromLocalStorage(cachedLat, cachedLon) {
-    console.log("setCoords");
     this.setState({
       latitude: cachedLat,
       longitude: cachedLon
