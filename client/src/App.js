@@ -49,13 +49,21 @@ export class App extends Component {
     let response = await fetch('/api/weather?latitude=' + latitude + '&longitude=' + longitude + '&location=' + location);
     let body = await response.json();
 
-    if (response.status !== 200) throw Error(body.message);
-    this.callUnsplashApi(body.name)
-    this.setState({
-      data: body,
-      loading: false
-    })
-    return body;
+    if (body.cod == 404) {
+      console.log("error")
+      throw Error(body.message);
+    } else {
+      console.log(body.message)
+      this.callUnsplashApi(body.name)
+      this.setState({
+        errorText: "",
+        data: body,
+        loading: false
+      })
+      return body;
+    }
+
+
   };
 
   // 4. Grab location from Searchbar and then callWeatherApi
@@ -65,7 +73,13 @@ export class App extends Component {
     }, () => {
       this.callWeatherApi("latitude", "longitude", this.state.location)
         .then(res => this.setState({ response: res.express }))
-        .catch(err => console.log(err));
+        .catch(err =>
+          this.setState({
+            errorText: "city does not exist",
+          }),
+          console.log(this.state.errorText)
+
+        );
     });
   }
 
