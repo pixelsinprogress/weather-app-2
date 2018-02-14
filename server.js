@@ -19,13 +19,7 @@ app.get('/api/weather', (req, res) => {
   if (location == "geo") {
     let url = coordsURLPrefix + latAndLon + urlSuffix;
     request(url, function(error, response, body) {
-      if (error) {
-        body.name = "hiya"
-        res.send(body)
-      } else {
-        res.send(body);
-      }
-
+      res.send(body);
     });
   } else {
     let url = locationURLPrefix + location + urlSuffix;
