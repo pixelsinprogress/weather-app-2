@@ -78,13 +78,11 @@ export class App extends Component {
 
   // 3. Grab geocoords from browser window, then callApiWithCoords
   getCoords() {
-    console.log("getcoords");
     if (window.navigator.geolocation) { // if geolocation is supported
       navigator.geolocation.getCurrentPosition(
         (position) => {
           localStorage.setItem('latitude', position.coords.latitude);
           localStorage.setItem('longitude', position.coords.longitude);
-          console.log(localStorage);
           this.callWeatherApi(position.coords.latitude, position.coords.longitude, "geo")
             .then(res => this.setState({ response: res.express }))
             .catch(err => console.log(err));
@@ -95,9 +93,7 @@ export class App extends Component {
           });
         }
       );
-    } else {
-      // IP Fallback
-    }
+    } 
   }
 
   // 2. callWeatherApi with cached coords
@@ -114,13 +110,13 @@ export class App extends Component {
 
   // 1. When component mounts, set cached variables, if lat exists then callWeatherApi, if not then get lat and lon and callWeatherApi
   componentDidMount() {
+
     let cachedLat = localStorage.getItem('latitude');
     let cachedLon = localStorage.getItem('longitude');
 
     // checks to see if a lat already exists. If so, then no need to getCoords()
     cachedLat ? this.setCoordsFromLocalStorage(cachedLat, cachedLon) : this.getCoords();
 
-    // this.getCoords();
   }
 
 render() {
